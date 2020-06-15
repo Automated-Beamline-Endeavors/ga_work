@@ -494,7 +494,7 @@ def SwapMutation(individual, mutationRate):
     return newIndividual
 
 
-def InversionMutation2(individual, mutationRate):
+def InversionMutation(individual, mutationRate):
     '''
     Narrative: If a mutation is triggered, randomly selects two positions and reverses the order
                 of the cities between them.  Returns the possibly modified list.
