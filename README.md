@@ -4,7 +4,7 @@
 - Traveling Salesman Problem.ipynb
 
 ## Scripts
--TravelingSalesman.py
+- TravelingSalesman.py
 
 ## Results
 - Graphs

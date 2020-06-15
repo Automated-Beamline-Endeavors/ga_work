@@ -51,6 +51,7 @@ class Fitness:
     def routeFitness(self):
         if self.fitness == 0:
             self.fitness = 1 / float(self.routeDistance())
+
         return self.fitness
 
 #Used in the child generation phase
@@ -59,24 +60,25 @@ mutationMethods = {0:"No", 1:"Swap", 2:"Inversion"}
 
 ####################### FUNCTION DEFINITIONS #######################
 def createRoute(cityList):
-'''
-Narrative: Generates a random route from all of the cities and returns it as a list.
+    '''
+    Narrative: Generates a random route from all of the cities and returns it as a list.
 
-Parameters:
-    cityList: A list of all the cities.
-'''
+    Parameters:
+        cityList: A list of all the cities.
+    '''
     route = random.sample(cityList, len(cityList))
+
     return route
 
 
 def initialPopulation(popSize, cityList):
-'''
-Narrative: Generates a population of potential routes and returns it in a list.
+    '''
+    Narrative: Generates a population of potential routes and returns it in a list.
 
-Parameters:
-    popSize: An integer that determines how many routes to create.
-    cityList: A list of all the cities.
-'''
+    Parameters:
+        popSize: An integer that determines how many routes to create.
+        cityList: A list of all the cities.
+    '''
     population = []
 
     for i in range(0, popSize):
@@ -85,13 +87,13 @@ Parameters:
 
 
 def rankRoutes(population):
-'''
-Narrative: Calculates the fitness of all the routes in the population and returns them in a sorted
-            list with the fittest at position 0.
+    '''
+    Narrative: Calculates the fitness of all the routes in the population and returns them in a sorted
+                list with the fittest at position 0.
 
-Parameters:
-    population: A list of all the routes in the current generation.
-'''
+    Parameters:
+        population: A list of all the routes in the current generation.
+    '''
     fitnessResults = {}
     for i in range(0,len(population)):
         fitnessResults[i] = Fitness(population[i]).routeFitness()
@@ -99,13 +101,13 @@ Parameters:
 
 
 def selection(popRanked, eliteSize):
-'''
-Narrative: Determines .
+    '''
+    Narrative: Determines .
 
-Parameters:
-    popRanked: A list of all the cities
-    eliteSize: An integer for the number of fittest routes to carry over in simulation
-'''
+    Parameters:
+        popRanked: A list of all the cities
+        eliteSize: An integer for the number of fittest routes to carry over in simulation
+    '''
     selectionResults = []
     df = pd.DataFrame(np.array(popRanked), columns=["Index","Fitness"])
     df['cum_sum'] = df.Fitness.cumsum()
@@ -124,13 +126,13 @@ Parameters:
 
 
 def matingPool(population, selectionResults):
-'''
-Narrative: Determines .
+    '''
+    Narrative: Determines .
 
-Parameters:
-    population: A list of all the routes in the current generation.
-    selectionResults:
-'''
+    Parameters:
+        population: A list of all the routes in the current generation.
+        selectionResults:
+    '''
     matingpool = []
 
     for i in range(0, len(selectionResults)):
@@ -162,16 +164,16 @@ def breedPopulation(matingpool, eliteSize, childMethod):
 
 
 def mutatePopulation(population, mutationRate, mutMethod):
-'''
-Narrative: Has the possibility of triggering a change in the routes within population and
-            returns the new population.
+    '''
+    Narrative: Has the possibility of triggering a change in the routes within population and
+                returns the new population.
 
-Parameters:
-    population: A list of all the routes in the current generation.
-    mutationRate: A value between 0.0-1.0.  Determines the likelihood of a mutation
-                    occuring.
-    mutMethod: An integer that determines what mutation method to use.
-'''
+    Parameters:
+        population: A list of all the routes in the current generation.
+        mutationRate: A value between 0.0-1.0.  Determines the likelihood of a mutation
+                        occuring.
+        mutMethod: An integer that determines what mutation method to use.
+    '''
     mutatedPop = []
 
     for ind in range(0, len(population)):
@@ -187,18 +189,18 @@ Parameters:
 
 
 def nextGeneration(currentGen, eliteSize, mutationRate, childMethod, mutMethod):
-'''
-Narrative: Produces the next generation in the simulation and returns it.
+    '''
+    Narrative: Produces the next generation in the simulation and returns it.
 
-Parameters:
-    currentGen: A list of all the routes in the current generation.
-    eliteSize: An integer that determines how many of the current fittest routes carry
-                over into the next generation.
-    mutationRate: A value between 0.0-1.0.  Determines the likelihood of a mutation
-                    occuring.
-    childMethod: An integer that determines what recombintion method to use.
-    mutMethod: An integer that determines what mutation method to use.
-'''
+    Parameters:
+        currentGen: A list of all the routes in the current generation.
+        eliteSize: An integer that determines how many of the current fittest routes carry
+                    over into the next generation.
+        mutationRate: A value between 0.0-1.0.  Determines the likelihood of a mutation
+                        occuring.
+        childMethod: An integer that determines what recombintion method to use.
+        mutMethod: An integer that determines what mutation method to use.
+    '''
     popRanked = rankRoutes(currentGen)
     selectionResults = selection(popRanked, eliteSize)
     matingpool = matingPool(currentGen, selectionResults)
@@ -211,21 +213,21 @@ Parameters:
 ####################### RECOMBINATION FUNCTIONS #######################
 #Partially Mapped Crossover method of recombination/child generation
 def PMX(parent1, parent2):
-'''
-Narrative: Copies a section of parent1's route into child, then looks at parent2 in the
-            same section and places the unassigned values in that region of child in the
-            location of the value that took its place.
-                ex.) if 4 was copied from parent1 into child and in parent2 the spot
-                        4 was copied into was where 8 goes in parent2, then the position
-                        of 4 in parent2 would be found and the 8 would be placed in that
-                        location in child
-            Once those values are placed, the remaining values in parent2 that have not
-            been copied into child are copied over in the same order they are in in parent2.
-            Returns the new list.
+    '''
+    Narrative: Copies a section of parent1's route into child, then looks at parent2 in the
+                same section and places the unassigned values in that region of child in the
+                location of the value that took its place.
+                    ex.) if 4 was copied from parent1 into child and in parent2 the spot
+                            4 was copied into was where 8 goes in parent2, then the position
+                            of 4 in parent2 would be found and the 8 would be placed in that
+                            location in child
+                Once those values are placed, the remaining values in parent2 that have not
+                been copied into child are copied over in the same order they are in in parent2.
+                Returns the new list.
 
-Parameters:
-    parent1 & 2: Lists of cities to be used to generate a new route, child.
-'''
+    Parameters:
+        parent1 & 2: Lists of cities to be used to generate a new route, child.
+    '''
     child = [None] * len(parent1)
 
     #Choose 2 crossover points at random
@@ -330,18 +332,18 @@ def FindShortestListKey(lst, edges, child):
 
 #Edge Crossover method of recombination/child generation
 def EX(parent1, parent2):
-'''
-Narrative: Generates a new route, child, from parent1 and 2 by prioritizing shared
-            edges (ex. a road between city A and B in both parent1 and 2) and, when
-            one isn't found, picking a city that connects to the smallest number of
-            cities.  When there is a tie, or no city that matches the previous critieria,
-            a city is randomly chosen from the available options.  Once a city is selected,
-            it is removed from the list.  This process is repeated until there are no cities
-            left to add.  Returns the new list.
+    '''
+    Narrative: Generates a new route, child, from parent1 and 2 by prioritizing shared
+                edges (ex. a road between city A and B in both parent1 and 2) and, when
+                one isn't found, picking a city that connects to the smallest number of
+                cities.  When there is a tie, or no city that matches the previous critieria,
+                a city is randomly chosen from the available options.  Once a city is selected,
+                it is removed from the list.  This process is repeated until there are no cities
+                left to add.  Returns the new list.
 
-Parameters:
-    parent1 & 2: Lists of cities to be used to generate a new route, child.
-'''
+    Parameters:
+        parent1 & 2: Lists of cities to be used to generate a new route, child.
+    '''
     child = []
 
     #A dictionary with each city as a key that connects to a list of its edges
@@ -416,14 +418,14 @@ Parameters:
 
 #Order Crossover method of recombination/child generation
 def OX(parent1, parent2):
-'''
-Narrative: Copies a section of parent1's route into child, then starting at the end of
-            the section, the values of parent2 are copied over into child if they are
-            not already in child while still preverving their order.  Returns the new list.
+    '''
+    Narrative: Copies a section of parent1's route into child, then starting at the end of
+                the section, the values of parent2 are copied over into child if they are
+                not already in child while still preverving their order.  Returns the new list.
 
-Parameters:
-    parent1 & 2: Lists of cities to be used to generate a new route, child.
-'''
+    Parameters:
+        parent1 & 2: Lists of cities to be used to generate a new route, child.
+    '''
     child = [None] * len(parent1)
     notAdded = None
 
@@ -473,15 +475,15 @@ Parameters:
 
 ####################### MUTATION FUNCTIONS #######################
 def SwapMutation(individual, mutationRate):
-'''
-Narrative: If a mutation is triggered, randomly selects two cities in individual and swaps
-            their positions.  Returns the possibly modified list.
+    '''
+    Narrative: If a mutation is triggered, randomly selects two cities in individual and swaps
+                their positions.  Returns the possibly modified list.
 
-Parameters:
-    individual: A list of cities.  Possibly has the cities reordered.
-    mutationRate: A value between 0.0-1.0.  Determines the likelihood of a mutation
-                    occuring.
-'''
+    Parameters:
+        individual: A list of cities.  Possibly has the cities reordered.
+        mutationRate: A value between 0.0-1.0.  Determines the likelihood of a mutation
+                        occuring.
+    '''
     newIndividual = individual.copy()
 
     if(random.random() < mutationRate):
@@ -493,15 +495,15 @@ Parameters:
 
 
 def InversionMutation2(individual, mutationRate):
-'''
-Narrative: If a mutation is triggered, randomly selects two positions and reverses the order
-            of the cities between them.  Returns the possibly modified list.
+    '''
+    Narrative: If a mutation is triggered, randomly selects two positions and reverses the order
+                of the cities between them.  Returns the possibly modified list.
 
-Parameters:
-    individual: A list of cities.  Possibly has the cities reordered.
-    mutationRate: A value between 0.0-1.0.  Determines the likelihood of a mutation
-                    occuring.
-'''
+    Parameters:
+        individual: A list of cities.  Possibly has the cities reordered.
+        mutationRate: A value between 0.0-1.0.  Determines the likelihood of a mutation
+                        occuring.
+    '''
     newIndividual = individual.copy()
 
     if(random.random() < mutationRate):
